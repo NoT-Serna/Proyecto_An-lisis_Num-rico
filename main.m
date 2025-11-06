@@ -1,4 +1,4 @@
-% --- Proyecto Final --------------------------------------
+ % --- Proyecto Final --------------------------------------
 % 1. Lectura de nube de puntos:
 data = readmatrix('CilindroHueco.asc');
 x = data(:,1);
@@ -51,3 +51,29 @@ xlabel('X'), ylabel('Y'), zlabel('Z')
 title(['Ajuste polinomial de grado ', num2str(grado)])
 legend
 axis equal
+
+
+% p ya existe (coeficientes de mayor a menor)
+grado = length(p)-1;
+% Construir cadena de la fórmula
+fmt = '';
+for k = 1:length(p)
+    expo = grado - (k-1);
+    coef = p(k);
+    if abs(coef) < 1e-12, coef = 0; end
+    if k==1
+        fmt = sprintf('%.6g*x^%d', coef, expo);
+    else
+        if coef >= 0
+            fmt = sprintf('%s + %.6g*x^%d', fmt, coef, expo);
+        else
+            fmt = sprintf('%s - %.6g*x^%d', fmt, abs(coef), expo);
+        end
+    end
+end
+disp(['Polinomio: z(x) = ', fmt])
+% También puedes convertirlo a symbolic para manipular:
+syms x
+z_sym = poly2sym(p, x);
+pretty(z_sym)
+
